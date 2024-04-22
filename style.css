@@ -41,13 +41,10 @@ main{
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin: 10px;
 }
 
 #main_text{
     display: flex;
     flex-direction: column;
-}
-
-p{
-
 }
