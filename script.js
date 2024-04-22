@@ -6,6 +6,18 @@ let ratioSlider;
 let ratio;
 let ratioText;
 
+let blueRatioSlider;
+let blueRatio;
+let blueRatioText;
+
+let greenRatioSlider;
+let greenRatio;
+let greenRatioText;
+
+let yellowRatioSlider;
+let yellowRatio;
+let yellowRatioText;
+
 let emptySlider;
 let empty;
 let emptyText;
@@ -318,14 +330,27 @@ function stepSimulation(){
 }
 
 function addRace(){
-    if(totalRaces == 3){
+    if(totalRaces < 4){
+        totalRaces += 1;
+    }
+    if(totalRaces > 0){
+        subtractButton.removeAttribute("disabled");
+    }
+    if(totalRaces == 4){
         addButton.attribute("disabled", "disabled");
     }
-    totalRaces += 1;
 }
 
 function subtractRace(){
-    similarity = similarSlider.value();
+    if(totalRaces > 2){
+        totalRaces -= 1;
+    }
+    if(totalRaces <= 2){
+        subtractButton.attribute("disabled", "disabled");
+    }
+    if(totalRaces == 3){
+        addButton.removeAttribute("disabled");
+    }
 }
 
 function updateSimilarity(){
