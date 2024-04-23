@@ -1,42 +1,66 @@
 let similarSlider;
 let similarity;
 let similarText;
+let similarDiv;
 
-let ratioSlider;
-let ratio;
-let ratioText;
+let redRatioSlider;
+let redRatio;
+let redRatioText;
+let redRatioDiv;
+let redOuterDiv;
+let redButton;
+let redFix = true;
 
 let blueRatioSlider;
 let blueRatio;
 let blueRatioText;
+let blueRatioDiv;
+let blueOuterDiv;
+let blueButton;
+let blueFix = true;
 
 let greenRatioSlider;
 let greenRatio;
 let greenRatioText;
+let greenRatioDiv;
+let greenOuterDiv;
+let greenButton;
+let greenFix = false;
 
 let yellowRatioSlider;
 let yellowRatio;
 let yellowRatioText;
+let yellowRatioDiv;
+let yellowOuterDiv;
+let yellowButton;
+let yellowFix = false;
+
+let activatedSliders = 2;
 
 let emptySlider;
 let empty;
 let emptyText;
+let emptyDiv;
 
 let sizeSlider;
 let size;
 let sizeText;
+let sizeDiv;
 
 let delaySlider;
 let delay;
 let delayText;
-
+let delayDiv;
 
 let startButton;
 let stopButton;
 let resetButton;
 let stepButton;
-let addButton;
-let subtractButton;
+
+let buttonDiv;
+let sliderDiv;
+let allRatios;
+let overallDiv;
 
 let round;
 let satisfied;
@@ -84,17 +108,17 @@ function setup() {
     round = document.getElementById("round");
     satisfied = document.getElementById("satisfied");
 
-    let overallDiv = document.getElementById("ultimateDiv");
+    overallDiv = document.getElementById("ultimateDiv");
 
-    let buttonDiv = createDiv();
+    buttonDiv = createDiv();
     buttonDiv.id("button");
     buttonDiv.parent(overallDiv);
 
-    let sliderDiv = createDiv();
+    sliderDiv = createDiv();
     sliderDiv.id("slider");
     sliderDiv.parent(overallDiv);
 
-    let similarDiv = createDiv();
+    similarDiv = createDiv();
     similarDiv.id("similarDiv");
     similarDiv.parent("slider");
     similarSlider = createSlider(0, 100, 30, 1);
@@ -104,18 +128,7 @@ function setup() {
     document.getElementById('similarDiv').appendChild(similarText);
     similarSlider.parent("similarDiv")
 
-    let ratioDiv = createDiv();
-    ratioDiv.id("ratioDiv");
-    ratioDiv.parent("slider");
-    ratioSlider = createSlider(0, 100, 50, 1);
-    ratioSlider.mouseReleased(reset);
-    ratio = ratioSlider.value();
-    ratioText = document.createElement('div');
-    ratioText.innerHTML = "Ratio: " + str(ratio) + "/" + str(100-ratio) + "%";
-    document.getElementById('ratioDiv').appendChild(ratioText);
-    ratioSlider.parent("ratioDiv")
-
-    let emptyDiv = createDiv();
+    emptyDiv = createDiv();
     emptyDiv.id("emptyDiv");
     emptyDiv.parent("slider");
     emptySlider = createSlider(0, 100, 10, 1);
@@ -126,7 +139,7 @@ function setup() {
     document.getElementById('emptyDiv').appendChild(emptyText);
     emptySlider.parent("emptyDiv")
 
-    let sizeDiv = createDiv();
+    sizeDiv = createDiv();
     sizeDiv.id("sizeDiv");
     sizeDiv.parent("slider");
     sizeSlider = createSlider(10, 80, 50, 1);
@@ -137,7 +150,7 @@ function setup() {
     document.getElementById('sizeDiv').appendChild(sizeText);
     sizeSlider.parent("sizeDiv")
 
-    let delayDiv = createDiv();
+    delayDiv = createDiv();
     delayDiv.id("delayDiv");
     delayDiv.parent("slider");
     delaySlider = createSlider(1, 3000, 100, 1);
@@ -147,6 +160,76 @@ function setup() {
     document.getElementById('delayDiv').appendChild(delayText);
     delaySlider.parent("delayDiv")
 
+    redOuterDiv = createDiv();
+    redOuterDiv.id("redOuterDiv");
+    redOuterDiv.parent("slider");
+    redRatioDiv = createDiv();
+    redRatioDiv.id("redRatioDiv");
+    redRatioDiv.parent("redOuterDiv");
+    redRatioSlider = createSlider(0, 100, 50, 1);
+    redRatioSlider.mouseReleased(adjustRedProportion);
+    redRatio = redRatioSlider.value();
+    redRatioText = document.createElement('div');
+    redRatioText.innerHTML = "Red Proportion: " + str(redRatio) + "%";
+    document.getElementById('redRatioDiv').appendChild(redRatioText);
+    redRatioSlider.parent("redRatioDiv")
+    redButton = createButton('Fix');
+    redButton.mousePressed(adjustRed);
+    redButton.parent("redOuterDiv")
+
+    blueOuterDiv = createDiv();
+    blueOuterDiv.id("blueOuterDiv");
+    blueOuterDiv.parent("slider");
+    blueRatioDiv = createDiv();
+    blueRatioDiv.id("blueRatioDiv");
+    blueRatioDiv.parent("blueOuterDiv");
+    blueRatioSlider = createSlider(0, 100, 50, 1);
+    blueRatioSlider.mouseReleased(adjustBlueProportion);
+    blueRatio = blueRatioSlider.value();
+    blueRatioText = document.createElement('div');
+    blueRatioText.innerHTML = "Blue Proportion: " + str(blueRatio) + "%";
+    document.getElementById('blueRatioDiv').appendChild(blueRatioText);
+    blueRatioSlider.parent("blueRatioDiv")
+    blueButton = createButton('Fix');
+    blueButton.mousePressed(adjustBlue);
+    blueButton.parent("blueOuterDiv")
+
+    greenOuterDiv = createDiv();
+    greenOuterDiv.id("greenOuterDiv");
+    greenOuterDiv.parent("slider");
+    greenRatioDiv = createDiv();
+    greenRatioDiv.id("greenRatioDiv");
+    greenRatioDiv.parent("greenOuterDiv");
+    greenRatioSlider = createSlider(0, 100, 0, 1);
+    greenRatioSlider.mouseReleased(adjustGreenProportion);
+    greenRatio = greenRatioSlider.value();
+    greenRatioText = document.createElement('div');
+    greenRatioText.innerHTML = "Green Proportion: " + str(greenRatio) + "%";
+    document.getElementById('greenRatioDiv').appendChild(greenRatioText);
+    greenRatioSlider.parent("greenRatioDiv")
+    greenButton = createButton('Unfix');
+    greenButton.mousePressed(adjustGreen);
+    greenButton.parent("greenOuterDiv")
+    greenRatioSlider.attribute("disabled", "disabled");
+
+    yellowOuterDiv = createDiv();
+    yellowOuterDiv.id("yellowOuterDiv");
+    yellowOuterDiv.parent("slider");
+    yellowRatioDiv = createDiv();
+    yellowRatioDiv.id("yellowRatioDiv");
+    yellowRatioDiv.parent("yellowOuterDiv");
+    yellowRatioSlider = createSlider(0, 100, 0, 1);
+    yellowRatioSlider.mouseReleased(adjustYellowProportion);
+    yellowRatio = yellowRatioSlider.value();
+    yellowRatioText = document.createElement('div');
+    yellowRatioText.innerHTML = "Yellow Proportion: " + str(yellowRatio) + "%";
+    document.getElementById('yellowRatioDiv').appendChild(yellowRatioText);
+    yellowRatioSlider.parent("yellowRatioDiv")
+    yellowButton = createButton('Unfix');
+    yellowButton.mousePressed(adjustYellow);
+    yellowButton.parent("yellowOuterDiv")
+    yellowRatioSlider.attribute("disabled", "disabled");
+
     startButton = createButton('Start');
     startButton.mousePressed(startSimulation);
     stopButton = createButton('Stop');
@@ -155,20 +238,306 @@ function setup() {
     resetButton.mousePressed(reset);
     stepButton = createButton('Step');
     stepButton.mousePressed(stepSimulation);
-    addButton = createButton('Add Color');
-    addButton.mousePressed(addRace);
-    subtractButton = createButton('Remove Color');
-    subtractButton.mousePressed(subtractRace);
 
     startButton.parent("button");
     stopButton.parent("button");
     stopButton.attribute("disabled", "disabled");
     resetButton.parent("button");
     stepButton.parent("button");
-    addButton.parent("button");
-    subtractButton.parent("button");
-    subtractButton.attribute("disabled", "disabled");
     reset();
+}
+
+function adjustRedProportion() {
+    let totalProportion = 100;
+    if(!blueFix){
+        totalProportion -= blueRatio;
+    }
+    if(!greenFix){
+        totalProportion -= greenRatio;
+    }
+    if(!yellowFix){
+        totalProportion -= yellowRatio;
+    }
+    if(redRatio > totalProportion){
+        redRatio = totalProportion;
+        redRatioSlider.value(redRatio);
+    }
+    totalProportion -= redRatio;
+
+    if(blueFix && greenFix && yellowFix){
+        blueRatio = Math.floor(totalProportion/(activatedSliders-1));
+        greenRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatio = totalProportion - blueRatio - greenRatio;
+        blueRatioSlider.value(blueRatio);
+        greenRatioSlider.value(greenRatio);
+        yellowRatioSlider.value(yellowRatio);
+    }
+    if(blueFix && greenFix){
+        blueRatio = Math.floor(totalProportion/(activatedSliders-1));
+        blueRatioSlider.value(blueRatio);
+        greenRatio = totalProportion - blueRatio;
+        blueRatioSlider.value(blueRatio);
+        greenRatioSlider.value(greenRatio);
+    }
+    if(yellowFix && greenFix){
+        greenRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatio = totalProportion - greenRatio;
+        greenRatioSlider.value(greenRatio);
+        yellowRatioSlider.value(yellowRatio);
+    }
+    if(yellowFix && blueFix){
+        blueRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatio = totalProportion - blueRatio;
+        blueRatioSlider.value(blueRatio);
+        yellowRatioSlider.value(yellowRatio);
+    }
+    if(blueFix){
+        blueRatio = Math.floor(totalProportion/(activatedSliders-1));
+        blueRatioSlider.value(blueRatio);
+    }
+    if(greenFix){
+        greenRatio = Math.floor(totalProportion/(activatedSliders-1));
+        greenRatioSlider.value(greenRatio);
+    }
+    if(yellowFix){
+        yellowRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatioSlider.value(yellowRatio);
+    }
+    reset();
+}
+
+function adjustBlueProportion() {
+    let totalProportion = 100;
+    if(!redFix){
+        totalProportion -= redRatio;
+    }
+    if(!greenFix){
+        totalProportion -= greenRatio;
+    }
+    if(!yellowFix){
+        totalProportion -= yellowRatio;
+    }
+    if(blueRatio > totalProportion){
+        blueRatio = totalProportion;
+        blueRatioSlider.value(blueRatio);
+    }
+    totalProportion -= blueRatio;
+
+    if(redFix && greenFix && yellowFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        greenRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatio = totalProportion - redRatio - greenRatio;
+        redRatioSlider.value(redRatio);
+        greenRatioSlider.value(greenRatio);
+        yellowRatioSlider.value(yellowRatio);
+    }
+    if(redFix && greenFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        greenRatio = totalProportion - redRatio;
+        redRatioSlider.value(redRatio);
+        greenRatioSlider.value(greenRatio);
+    }
+    if(yellowFix && greenFix){
+        greenRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatio = totalProportion - greenRatio;
+        greenRatioSlider.value(greenRatio);
+        yellowRatioSlider.value(yellowRatio);
+    }
+    if(yellowFix && redFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatio = totalProportion - redRatio;
+        redRatioSlider.value(redRatio);
+        yellowRatioSlider.value(yellowRatio);
+    }
+    if(redFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        redRatioSlider.value(redRatio);
+    }
+    if(greenFix){
+        greenRatio = Math.floor(totalProportion/(activatedSliders-1));
+        greenRatioSlider.value(greenRatio);
+    }
+    if(yellowFix){
+        yellowRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatioSlider.value(yellowRatio);
+    }
+    reset();
+}
+
+function adjustGreenProportion() {
+    let totalProportion = 100;
+    if(!redFix){
+        totalProportion -= redRatio;
+    }
+    if(!blueFix){
+        totalProportion -= blueRatio;
+    }
+    if(!yellowFix){
+        totalProportion -= yellowRatio;
+    }
+    if(greenRatio > totalProportion){
+        greenRatio = totalProportion;
+        greenRatioSlider.value(greenRatio);
+    }
+    totalProportion -= greenRatio;
+
+    if(redFix && blueFix && yellowFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        blueRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatio = totalProportion - redRatio - blueRatio;
+        redRatioSlider.value(redRatio);
+        blueRatioSlider.value(blueRatio);
+        yellowRatioSlider.value(yellowRatio);
+    }
+    if(redFix && blueFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        blueRatio = totalProportion - redRatio;
+        redRatioSlider.value(redRatio);
+        blueRatioSlider.value(blueRatio);
+    }
+    if(yellowFix && blueFix){
+        blueRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatio = totalProportion - blueRatio;
+        blueRatioSlider.value(blueRatio);
+        yellowRatioSlider.value(yellowRatio);
+    }
+    if(yellowFix && redFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatio = totalProportion - redRatio;
+        redRatioSlider.value(redRatio);
+        yellowRatioSlider.value(yellowRatio);
+    }
+    if(redFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        redRatioSlider.value(redRatio);
+    }
+    if(blueFix){
+        blueRatio = Math.floor(totalProportion/(activatedSliders-1));
+        blueRatioSlider.value(blueRatio);
+    }
+    if(yellowFix){
+        yellowRatio = Math.floor(totalProportion/(activatedSliders-1));
+        yellowRatioSlider.value(yellowRatio);
+    }
+    reset();
+}
+
+function adjustYellowProportion() {
+    let totalProportion = 100;
+    if(!redFix){
+        totalProportion -= redRatio;
+    }
+    if(!blueFix){
+        totalProportion -= blueRatio;
+    }
+    if(!greenFix){
+        totalProportion -= yellowRatio;
+    }
+    if(yellowRatio > totalProportion){
+        yellowRatio = totalProportion;
+        yellowRatioSlider.value(yellowRatio);
+    }
+    totalProportion -= yellowRatio;
+
+    if(redFix && blueFix && greenFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        blueRatio = Math.floor(totalProportion/(activatedSliders-1));
+        greenRatio = totalProportion - redRatio - blueRatio;
+        redRatioSlider.value(redRatio);
+        blueRatioSlider.value(blueRatio);
+        greenRatioSlider.value(greenRatio);
+    }
+    if(redFix && blueFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        blueRatio = totalProportion - redRatio;
+        redRatioSlider.value(redRatio);
+        blueRatioSlider.value(blueRatio);
+    }
+    if(greenFix && blueFix){
+        blueRatio = Math.floor(totalProportion/(activatedSliders-1));
+        greenRatio = totalProportion - blueRatio;
+        blueRatioSlider.value(blueRatio);
+        greenRatioSlider.value(greenRatio);
+    }
+    if(greenFix && redFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        greenRatio = totalProportion - redRatio;
+        redRatioSlider.value(redRatio);
+        greenRatioSlider.value(greenRatio);
+    }
+    if(redFix){
+        redRatio = Math.floor(totalProportion/(activatedSliders-1));
+        redRatioSlider.value(redRatio);
+    }
+    if(blueFix){
+        blueRatio = Math.floor(totalProportion/(activatedSliders-1));
+        blueRatioSlider.value(blueRatio);
+    }
+    if(greenFix){
+        greenRatio = Math.floor(totalProportion/(activatedSliders-1));
+        greenRatioSlider.value(greenRatio);
+    }
+    reset();
+}
+
+function adjustRed() {
+    if(redFix && activatedSliders > 2){
+        redButton.html("Unfix");
+        redRatioSlider.attribute("disabled", "disabled");
+        activatedSliders -= 1;
+        redFix = !redFix;
+    }
+    else if(!redFix){
+        redButton.html("Fix");
+        redRatioSlider.removeAttribute("disabled");
+        activatedSliders += 1;
+        redFix = !redFix;
+    }
+}
+
+function adjustBlue() {
+    if(blueFix && activatedSliders > 2){
+        blueButton.html("Unfix");
+        blueRatioSlider.attribute("disabled", "disabled");
+        activatedSliders -= 1;
+        blueFix = !blueFix;
+    }
+    else if(!blueFix){
+        blueButton.html("Fix");
+        blueRatioSlider.removeAttribute("disabled");
+        activatedSliders += 1;
+        blueFix = !blueFix;
+    }
+}
+
+function adjustGreen() {
+    if(greenFix && activatedSliders > 2){
+        greenButton.html("Unfix");
+        greenRatioSlider.attribute("disabled", "disabled");
+        activatedSliders -= 1;
+        greenFix = !greenFix;
+    }
+    else if(!greenFix){
+        greenButton.html("Fix");
+        greenRatioSlider.removeAttribute("disabled");
+        activatedSliders += 1;
+        greenFix = !greenFix;
+    }
+}
+
+function adjustYellow() {
+    if(yellowFix && activatedSliders > 2){
+        yellowButton.html("Unfix");
+        yellowRatioSlider.attribute("disabled", "disabled");
+        activatedSliders -= 1;
+        yellowFix = !yellowFix;
+    }
+    else if(!yellowFix){
+        yellowButton.html("Fix");
+        yellowRatioSlider.removeAttribute("disabled");
+        activatedSliders += 1;
+        yellowFix = !yellowFix;
+    }
 }
 
 function iterate(){
@@ -266,6 +635,12 @@ function iterate(){
         else if(oldColor == 2){
             allRects[newHouse].rect.style.backgroundColor = "blue";
         }
+        else if(oldColor == 3){
+            allRects[newHouse].rect.style.backgroundColor = "green";
+        }
+        else if(oldColor == 4){
+            allRects[newHouse].rect.style.backgroundColor = "yellow";
+        }
         allRects[newHouse].color = oldColor;
 
         allRects[house].rect.style.backgroundColor = "white";
@@ -329,38 +704,20 @@ function stepSimulation(){
     }
 }
 
-function addRace(){
-    if(totalRaces < 4){
-        totalRaces += 1;
-    }
-    if(totalRaces > 0){
-        subtractButton.removeAttribute("disabled");
-    }
-    if(totalRaces == 4){
-        addButton.attribute("disabled", "disabled");
-    }
-}
-
-function subtractRace(){
-    if(totalRaces > 2){
-        totalRaces -= 1;
-    }
-    if(totalRaces <= 2){
-        subtractButton.attribute("disabled", "disabled");
-    }
-    if(totalRaces == 3){
-        addButton.removeAttribute("disabled");
-    }
-}
-
 function updateSimilarity(){
     similarity = similarSlider.value();
     similarText.innerHTML = "Similarity: " + str(similarity) + "%";
 }
 
 function updateRatio(){
-    ratio = ratioSlider.value();
-    ratioText.innerHTML = "Ratio: " + str(ratio) + "/" + str(100-ratio) + "%";
+    redRatio = redRatioSlider.value();
+    blueRatio = blueRatioSlider.value();
+    greenRatio = greenRatioSlider.value();
+    yellowRatio = yellowRatioSlider.value();
+    redRatioText.innerHTML = "Red Proportion: " + str(redRatio) + "%";
+    blueRatioText.innerHTML = "Blue Proportion: " + str(blueRatio) + "%";
+    greenRatioText.innerHTML = "Green Proportion: " + str(greenRatio) + "%";
+    yellowRatioText.innerHTML = "Yellow Proportion: " + str(yellowRatio) + "%";
 }
 
 function updateEmpty(){
@@ -383,12 +740,25 @@ function getRandomColors(){
     let numEmpty = Math.floor(empty/100 * totalHouses);
     let allEmptyHouses = Array(numEmpty).fill(0);
     totalHouses -= numEmpty;
-    let numRed = Math.floor(ratio/100 * totalHouses);
+
+    let numRed = Math.floor(redRatio/100 * totalHouses);
     let allRedHouses = Array(numRed).fill(1);
-    totalHouses -= numRed;
-    let numBlue = totalHouses;
+
+    let numBlue = Math.floor(blueRatio/100 * totalHouses);
     let allBlueHouses = Array(numBlue).fill(2);
-    randomColors = allEmptyHouses.concat(allRedHouses).concat(allBlueHouses);
+
+    let numGreen = Math.floor(greenRatio/100 * totalHouses);
+    let allGreenHouses = Array(numGreen).fill(3);
+
+    let numYellow = Math.floor(yellowRatio/100 * totalHouses);
+    let allYellowHouses = Array(numYellow).fill(4);
+
+    totalHouses = totalHouses - numRed - numGreen - numBlue - numGreen;
+    if(totalHouses > 0){
+        allEmptyHouses.concat(Array(totalHouses).fill(0));
+    }
+
+    randomColors = allEmptyHouses.concat(allRedHouses).concat(allBlueHouses).concat(allGreenHouses).concat(allYellowHouses);
 }
 
 function populateGrid() {
@@ -414,6 +784,12 @@ function populateGrid() {
             }
             else if(myRectColor == 2){
                 td.style.backgroundColor = "blue";
+            }
+            else if(myRectColor == 3){
+                td.style.backgroundColor = "green";
+            }
+            else if(myRectColor == 4){
+                td.style.backgroundColor = "yellow";
             }
             else{
                 td.style.backgroundColor = "white";
